@@ -5,7 +5,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 CoordMode Mouse, Client
 SetMouseDelay -1
 SetBatchLines, -1
-
+;Version 1.0
 ;Original script By: Flight
 ;Converted into ahk By: Arekusei
 
