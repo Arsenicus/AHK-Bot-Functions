@@ -2,23 +2,21 @@
 
 
 EXAMPLES
-- xs = xStart position
-- ys = yStart position
-- xe = xEnd position
-- ye = yEnd position
-
+- xs = xStart position  ys = yStart position
+- xe = xEnd position    ye = yEnd position
+- minWait - maxWait is mouse speed, the higher the slower. Use around 0.01 up to 3 rec
 
 
 ```autohotkey
 
-humanWindMouse(xs, ys, xe, ye, gravity, wind, targetArea)
+humanWindMouse(xs, ys, xe, ye, gravity, wind, minWait, maxWait, targetArea)
 
 w::
-humanWindMouse(100, 200, 310, 310, 11, 10, 22)
+humanWindMouse(100, 200, 310, 310, 11, 10, 0.1 , 0.2, 22)
 return
 
 q::
-humanWindMouse(200, 200, 1200, 400, 11, 5, 33)
+humanWindMouse(200, 200, 1200, 400, 11, 5, 0.1 , 0.2, 33)
 return
 ```
 
