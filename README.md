@@ -7,6 +7,10 @@ EXAMPLES
 - xe = xEnd position
 - ye = yEnd position
 
+
+
+```autohotkey
+
 humanWindMouse(xs, ys, xe, ye, gravity, wind, targetArea)
 
 w::
@@ -16,3 +20,5 @@ return
 q::
 humanWindMouse(200, 200, 1200, 400, 11, 5, 33)
 return
+```
+
