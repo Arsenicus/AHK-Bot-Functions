@@ -6,6 +6,8 @@ CoordMode Mouse, Client
 SetMouseDelay -1
 SetBatchLines, -1
 
+;Original script By: Flight
+;Converted into ahk By: Arekusei
 
 
 humanWindMouse(xs, ys, xe, ye, gravity, wind, minWait, maxWait, targetArea)
@@ -139,7 +141,4 @@ distance(x1,y1,x2,y2)
 	return % Sqrt((x2 - x1)**2 + (y2 - y1)**2)
 }
 
-
-
-esc::ExitApp
 
