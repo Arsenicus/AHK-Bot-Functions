@@ -1,25 +1,16 @@
-﻿#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
+#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 ; #Warn  ; Enable warnings to assist with detecting common errors.
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 CoordMode Mouse, Client
 SetMouseDelay -1
 SetBatchLines, -1
-;humanWindMouse(x, y, rx, ry, 303, 553, (10.0/randSpeed), (12.0/randSpeed), (10.0*randSpeed))
 
-q::
-;humanWindMouse(500, 400, 200, 200,    11, 5, 10.1, 20.5, 10.5)
-speed = % (randomP() * 15 + 15) / 10
-humanWindMouse(500, 400, 200, 200,    6, 3,  10 , 20, 40)
-return
+
 
 humanWindMouse(xs, ys, xe, ye, gravity, wind, minWait, maxWait, targetArea)
 {
-;var
-;veloX,veloY,windX,windY,veloMag,dist,randomDist,lastDist,D: extended;
-;lastX,lastY,MSP,W,TDist: integer;
-;T : LongWord;
-;sqrt2,sqrt3,sqrt5,maxStep,rCnc: extended;
+	
 	windX := 0, windY := 0,
 	veloX := 0, veloY := 0,
 	maxStep := 0
@@ -92,7 +83,6 @@ humanWindMouse(xs, ys, xe, ye, gravity, wind, minWait, maxWait, targetArea)
 		
 		if (lastX <> round(xs)) or (lastY <> round(ys)){
 			MouseMove, % round(xs) , % round(ys)
-			Click Down
 		}
 		
 			;moveMouse(round(xs), round(ys))
@@ -107,8 +97,13 @@ humanWindMouse(xs, ys, xe, ye, gravity, wind, minWait, maxWait, targetArea)
 		Sleep % W
 		lastdist:= dist
 		
+		;wait = (int)Math.Round(waitDiff * (step / maxStep) + minWait);
+		;double step = Math.hypot(xs - cx, ys - cy);
+		;sleep(Math.round((maxWait - minWait) * (step / maxStep) + minWait));
+		;waitDiff = maxWait - minWait;
+		
 	} until (hypot(xs - xe, ys - ye) < 1)
-	Click Up
+	
 	if (round(xe) <> round(xs)) or (round(ye) <> round(ys))
 		MouseMove, % round(xe) , % round(ye)
 		;MouseMove(round(xe), round(ye));
@@ -116,17 +111,13 @@ humanWindMouse(xs, ys, xe, ye, gravity, wind, minWait, maxWait, targetArea)
 	
 	mouseSpeed := MSP
 }
-
-
-
+	
+	
+	
 hypot(x,y){
 	Return Sqrt(x*x + y*y)
 }
 
-;random(n){
-;	random, out, -n, n
-;	return % out
-;}
 
 random(n){
 	random, out, 0, n
@@ -151,3 +142,4 @@ distance(x1,y1,x2,y2)
 
 
 esc::ExitApp
+
