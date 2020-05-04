@@ -10,7 +10,7 @@ SetBatchLines, -1
 ;Converted into ahk By: Arekusei
 
 
-humanWindMouse(xs, ys, xe, ye, gravity, wind, minWait, maxWait, targetArea)
+humanWindMouse(xs, ys, xe, ye, gravity, wind, targetArea)
 {
 	
 	windX := 0, windY := 0,
