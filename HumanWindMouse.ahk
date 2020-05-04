@@ -5,26 +5,24 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 CoordMode Mouse, Client
 SetMouseDelay -1
 SetBatchLines, -1
-;Version 1.0
+;Version 1.1
 ;Original script By: Flight
 ;Converted into ahk By: Arekusei
 
 
-humanWindMouse(xs, ys, xe, ye, gravity, wind, targetArea)
+humanWindMouse(xs, ys, xe, ye, gravity, wind, minWait, maxWait, targetArea)
 {
 	
 	windX := 0, windY := 0,
 	veloX := 0, veloY := 0,
 	maxStep := 0
 	
-	mousespeed := 60
-	MSP  := mouseSpeed
+	;MSP  := mouseSpeed
 	sqrt2:= sqrt(2)
 	sqrt3:= sqrt(3)
 	sqrt5:= sqrt(5)
 	
 	TDist := distance(round(xs), round(ys), round(xe), round(ye))
-	t := A_TickCount + 10000
 	
 	Loop {
 		
@@ -89,14 +87,17 @@ humanWindMouse(xs, ys, xe, ye, gravity, wind, targetArea)
 		
 			;moveMouse(round(xs), round(ys))
 		
-		W := (random((round(100/MSP)))*3)
+		;W := (random((round(100/MSP)))*3)
 		
-		if (W < 5)
-			W := 5
+		;if (W < 5)
+		;	W := 5
 		
-		W := round(W*0.9)
+		;W := round(W*0.9)
 		;wait(W);
-		Sleep % W
+		;Sleep % W
+		
+		waitDiff := maxWait - minWait
+		sleep % round((maxWait - minWait) * (dist / maxStep) + minWait)
 		lastdist:= dist
 		
 		;wait = (int)Math.Round(waitDiff * (step / maxStep) + minWait);
