@@ -11,6 +11,7 @@ EXAMPLES
 
 humanWindMouse(xs, ys, xe, ye, gravity, wind, minWait, maxWait, targetArea)
 
+Smooth movement: humanWindMouse(100, 200, 310, 310, 22, 10, 0.4 , 0.2, 50)
 w::
 humanWindMouse(100, 200, 310, 310, 11, 10, 0.1 , 0.2, 22)
 return
