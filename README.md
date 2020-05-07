@@ -6,7 +6,7 @@
   * Make sure client is **active** before you take coordinates
   
   
-* MousePaattern
+* MousePattern
   ```autohotkey
   x,y destination point
   MoveMouse(X,Y,Speed)
