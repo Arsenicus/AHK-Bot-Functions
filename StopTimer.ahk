@@ -1,5 +1,12 @@
 ;Written By Arekusei and AHK community
 
+;Add this code to where check needs to be done in your script
+
+;if (A_TickCount > ET){
+;    MsgBox DONE
+;    SetTimer, Stopwatch, Off
+;}
+
 #SingleInstance Force
 #NoEnv
 SetWorkingDir %A_ScriptDir%
