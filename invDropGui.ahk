@@ -75,7 +75,7 @@ toggle := !toggle
 If toggle
 	Gui,1: Hide
 else
-	Gui,1: Show
+	Gui,1: Show, NA
 return
 
 ~LButton::
