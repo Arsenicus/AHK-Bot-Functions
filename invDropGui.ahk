@@ -112,7 +112,7 @@ Loop 28
 
     if (Array[i]==0)
         {
-            inv_select(i,2)
+            inv_select(i,1)
             i++
         }
     Else if (Array[i]==1)
