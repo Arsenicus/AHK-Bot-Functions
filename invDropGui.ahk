@@ -1,5 +1,5 @@
 ;Made By Arekusei#3363
-;v2.0
+;v3.0
 
 ;------Drop Modes--------------------------------------------
 ; 1 - From Left to Right
@@ -38,6 +38,11 @@ SetBatchLines -1
 
 Global Array := [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 
+Global inv :=  [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28]
+Global inv2 := [1,5,9,13,17,21,25,2,6,10,14,18,22,26,3,7,11,15,19,23,27,4,8,12,16,20,24,28]
+
+Global arr2 := [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+
 WinGetPos XN, YN, , , A
 xn:=xn+567
 yn:=yn+240
@@ -57,8 +62,6 @@ Gui,1:Add,Progress, x%x%  y%y% w32 h32 -Smooth hWnd%n% vBAR%n% cFF7200, 100
 }
 Gui,1:Show, x%xn% y%yn% w158 h248 NA, InvDrop
 WinSet, Transparent, 125
-
-
 Return
 
 #If !WinActive("InvDrop")
@@ -73,9 +76,9 @@ Return
 !2::
 toggle := !toggle
 If toggle
-	Gui,1: Hide
+	Gui,1:Hide
 else
-	Gui,1: Show, NA
+	Gui,1:Show, NA
 return
 
 ~LButton::
@@ -107,16 +110,15 @@ Return
 ;---------------To drop whole inventory or Specific Slots if selected from GUI
 !w::
 i:=1
+
 Loop 28
 {
 
-    if (Array[i]==0)
+    if (arr2[i]==0)
         {
             inv_select(i,1)
             i++
-        }
-    Else if (Array[i]==1)
-        {
+        } else {
             i++
         }
 
@@ -132,13 +134,20 @@ inv_select(n,m:=1) {
     ;WinGetPos XN, YN, , , A
     ;---------------DROP MODE----------
     
+
     If (m=1){
         x := (Mod(n, 4) * 42)  + 567 + v
-        y := n // 4 * 36 + 240 + v    
+        y := n // 4 * 36 + 240 + v
+        loop 28
+            arr2[A_Index]:= array[inv[A_Index]]
     }
 	if (m=2){
         x := n // 7 * 42  + 567 + v
-        y := (Mod(n, 7) * 36)  + 240 + v     
+        y := (Mod(n, 7) * 36)  + 240 + v   
+        loop 28
+            arr2[A_Index]:= array[inv2[A_Index]]   ; reverse mod 1 into 2
+            ;arr2[A_Index]:= array[inv[A_Index]] ","   ; reverse mod 2 into 1
+       
     }
     if (m=3){
         if (n<14){
