@@ -34,8 +34,8 @@ MousePattern(xe, ye, gravity, wind, minWait, maxWait, targetArea)
 		if (dist < 1)
 			dist := 1
 		
-		D := (round((round(TDist)*0.3))/7)
-        D := (D>25)?(25):(D<5)?(5):(D)
+		D := (round((round(dist)*0.3))/7)
+        	D := (D>25)?(25):(D<5)?(5):(D)
 
 		
 		if (posrandom(6) = 1)
