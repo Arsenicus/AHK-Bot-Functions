@@ -1,5 +1,5 @@
 ;Made By Arekusei#3363
-;v3.1
+;v3.2
 
 ;------Drop Modes--------------------------------------------
 ; 1 - From Left to Right
@@ -30,7 +30,7 @@
 #NoEnv
 SetWorkingDir %A_ScriptDir%
 #SingleInstance Force
-CoordMode, Mouse, Client
+CoordMode, Mouse, Window
 SendMode Input
 SetKeyDelay -1
 SetMouseDelay -1
@@ -48,8 +48,8 @@ WinGetPos XN, YN, , , A
 xn:=xn+567
 yn:=yn+240
 Gui,1: +hwndHGUI
-Gui,1: +LastFound +AlwaysOnTop -Caption +ToolWindow 
-Gui,1:Margin, 0, 0
+Gui,1: +LastFound  +AlwaysOnTop ;-Caption +ToolWindow 
+Gui,1: Margin, 0, 0
 Loop 28
 {
 n:=A_Index -1
@@ -57,20 +57,35 @@ x := (Mod(n, 4) * 42)
 y := n // 4 * 36
 
     
-Gui,1:Add,Progress, x%x%  y%y% w32 h32 -Smooth hWnd%n% vBAR%n% cFF7200, 100
-;Gui,1:Add,Text, cBlack x%x%  y%y% w42 h36 +0x200 +Center +BackgroundTrans , % n +1
+Gui,1:Add,Progress, x%x%  y%y% w32 h32 -Smooth hWnd%n% vBAR%n% cFF7200 , 100
+Gui,1:Add,Text,cBlack x%x%  y%y% w32 h32 +0x200  +Center +BackgroundTrans vtxt%n% , % n +1
 
 }
 Gui,1:Show, x%xn% y%yn% w158 h248 NA, InvDrop
-WinSet, Transparent, 125
+;WinSet, Transparent, 150
+;OnMessage(0x200, "WM_MOUSEMOVE")
 Return
+
+
+
+
+join( strArray )
+{
+  s := ""
+  for i,v in strArray
+    s .= "." . v
+  return substr(s, 2)
+}
+
+
 
 #If !WinActive("InvDrop")
 !1::
 WinGetPos XN, YN, , , A
 xn:=xn+567
-yn:=yn+240
+yn:=yn+240 -21
 WinMove InvDrop,, xn,yn
+WinActivate, InvDrop
 Return
 #if
 
@@ -82,55 +97,57 @@ else
 	Gui,1:Show, NA
 return
 
+
+
+;#If WinActive("InvDrop")
+#If MouseIsOver("InvDrop")
 ~LButton::
-#If WinActive("InvDrop")
-MouseGetPos, , , HWIN, HCTRL, 2
-GuiControlGet, VarName, %HWIN%:Name, %HCTRL%
+;MouseGetPos,,,, curCon, 1
+;MsgBox % curCon
+
+MouseGetPos,,, X, Y
+ControlGetText, OUT , %Y%, ahk_id %X%
+;Msgbox, The window says, "%OUT%"
+
+;MouseGetPos, , , HWIN, HCTRL, 2
+;GuiControlGet, VarName, %HWIN%:Name, %HCTRL%
+varname := "BAR" OUT-1
 ;ToolTip Control %HCTRL% is v%VarName%
 if (Array[SubStr(VarName,4)+1]==0){
-    GuiControl, % "+c" SubStr("0x00000D", 3) , % VarName
+    GuiControl, % "+c" SubStr("0xFF0000", 3) , % VarName
     Array[SubStr(VarName,4)+1] :=1
 } else {
     GuiControl, % "+c" SubStr("0xFF7200", 3) , % VarName
     Array[SubStr(VarName,4)+1] :=0
 }
 varname:=0  
+
+GuiControl,+Redraw, % OUT
+
 return
 #if
 
 
+
 ;-----------------Example Of Dropping Selected Slot
 !q::
-KeyWait, Shift
-
-inv_select(1)
-inv_select(2)
-
+    ;KeyWait, Shift
+    inv_select(1)
+    ;inv_select(2)
 Return
 
 ;---------------To drop whole inventory or Specific Slots if selected from GUI
 !w::
-i:=1
-
-Loop 28
-{
-
-    if (arr2[i]==0)
-        {
-            inv_select(i,1)
-            i++
-        } else {
-            i++
-        }
-
-}
-
+    Loop 28 {
+        inv_select(A_Index,1)
+    }
 Return
 
 
-inv_select(n,m:=1) {
 
-    n:= n - 1, v:=15 ;15-16 middle of inventory slot, can be wrong outside RuneLite Client
+inv_select(n,m:=1,speed:=100) {
+
+    n:= n - 1, v:=0 ;15-16 middle of inventory slot, can be wrong outside RuneLite Client
     ;xn:=0, yn:=0
     ;WinGetPos XN, YN, , , A
     ;---------------DROP MODE----------
@@ -174,23 +191,68 @@ inv_select(n,m:=1) {
     ; }
     
     
+    if (arr2[A_Index]=1){ ;put 0 to reverse
+    return
+    }    
     
 
     ;|---------Your Mouse Function Here --------|
     ;Example
     ;
-	MouseMove, x, y, 0
+	;MouseMove, x, y, 0
+    move_m(x, y, 5)
     ;MoveMouse(600, 400, 0.5)
     ;ETC
     
     ;sleep 100 ;sleep between clicks
-    SendEvent {LShift Down}
+    ;SendEvent {LShift Down}
     Click
-    sleep 100
-    SendEvent {LShift Up}
+    ;sleep speed
+    ;SendEvent {LShift Up}
+}
+
+
+move_m(NX, NY, Dev:=1)
+{
+    Loop 
+    {
+        Random, X, -1.0, 1.0
+        Random, Y, -1.0, 1.0
+        W := X ** 2 + Y ** 2
+	} Until w < 1
+    
+	W := Sqrt((-2 * Log(W)) / W)
+	X := Dev * X * W
+	Y := Dev * Y * W
+    ;WinGetPos XN, YN, , , A
+    X:= X + NX ; + XN, 
+    Y:= Y + NY ; + YN
+    MouseMove X, Y
+    ;ToolTip, %X% %Y% %w%
+    return
+}
+
+MouseIsOver(WinTitle) {
+    MouseGetPos,,, Win
+    return WinExist(WinTitle . " ahk_id " . Win)
+}
+
+WM_MOUSEMOVE()
+{
+    static CurrControl
+    CurrControl := A_GuiControl
+   
+    If (InStr(CurrControl, "BAR"))
+    {
+        ToolTip % CurrControl
+        PrevControl := CurrControl
+    }    
+
 }
 
 ~+esc::
 ~esc::
+GuiEscape:
+GuiClose:
 SendEvent {LShift Up}
 ExitApp
