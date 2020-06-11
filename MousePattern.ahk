@@ -21,7 +21,7 @@ MousePattern(xe, ye, gravity, wind, minWait, maxWait, targetArea)
 	MouseGetPos xs, ys
     
 	windX := 0, windY := 0,veloX := 0, veloY := 0, maxStep := 0,
-    gravity := 9, wind := 3 
+    ;gravity := 9, wind := 3 
 	sqrt2:= sqrt(2), sqrt3:= sqrt(3), sqrt5:= sqrt(5)
 	TDist := hypot(xs - xe, ys - ye)
 	
