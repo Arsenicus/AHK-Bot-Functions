@@ -1,19 +1,19 @@
 ;Made By Arekusei#3363
-;v3.2
+;v3.3
 
 ;------Drop Modes--------------------------------------------
 ; 1 - From Left to Right
 ; 2 - From Top to Bottom
 ; 3 - Zig-Zag
-; 
+; etc
 ;      Usage Example
 
 ; n - inventory slot number
-; m - Drop mode 1-3
-; inv_select(n,m)
-; inv_selec(28,1) will get last inventory slot coordinates. Can be Wrong with different modes
+; m - Drop mode insert your array or listed ones below EXAMPLE: inv_select(1,inv3)
+; inv_select(n,inv3)
+; inv_selec(28) will get last inventory slot coordinates.
 
-;---------GUI is Extra, Look at 
+;---------GUI ----------------------------------------------
 ;
 ; Alt+1 to move gui, make sure rs window is active
 ; Alt+2 to Show/Hide Gui
@@ -23,7 +23,7 @@
 ;------------------------------------------------------------
 
 
-;!!!!!!!!      REPLACE MouseMove function with your own in "inv_select" !!!!!!!!!!
+;!!!!!!!!   REPLACE MouseMove function with your own in "inv_select" !!!!!!!!!!
 
 ;Testing In paint will need to set CoordMode to Window for it to be correct
 
@@ -37,17 +37,19 @@ SetMouseDelay -1
 SetBatchLines -1
 
 Global Array := [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-
+Global patArray := [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 Global inv :=  [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28]
 Global inv2 := [1,5,9,13,17,21,25,2,6,10,14,18,22,26,3,7,11,15,19,23,27,4,8,12,16,20,24,28]
 Global inv3 := [1,2,5,6,9,10,13,14,17,18,21,22,25,26,3,4,7,8,11,12,15,16,19,20,23,24,27,28]
 
-Global arr2 := [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+Global inv4 := [1,5,9,13,17,21,25,26,22,18,14,10,6,2,3,7,11,15,19,23,27,28,24,20,16,12,8,4]
+Global inv5 := [1,2,6,5,9,10,14,13,17,18,22,21,25,26,27,28,24,23,19,20,16,15,11,12,8,7,3,4]
 
 WinGetPos XN, YN, , , A
 xn:=xn+567
 yn:=yn+240
-Gui,1: +hwndHGUI
+Global currentPat:=0
+Gui,1: +hWndhMainWnd
 Gui,1: +LastFound  +AlwaysOnTop ;-Caption +ToolWindow 
 Gui,1: Margin, 0, 0
 Loop 28
@@ -61,19 +63,87 @@ Gui,1:Add,Progress, x%x%  y%y% w32 h32 -Smooth hWnd%n% vBAR%n% cFF7200 , 100
 Gui,1:Add,Text,cBlack x%x%  y%y% w32 h32 +0x200  +Center +BackgroundTrans vtxt%n% , % n +1
 
 }
-Gui,1:Show, x%xn% y%yn% w158 h248 NA, InvDrop
+Gui,1:Add,Button, x0 gRecord , Record Pattern
+;Gui,1:Add,Button, yp xp+85 gCopy, Copy Pattern
+Gui,1:Show, x%xn% y%yn% NA, InvDrop
 ;WinSet, Transparent, 150
 ;OnMessage(0x200, "WM_MOUSEMOVE")
+Return
+
+NewWindow:
+WinGetPos X, Y, Width, Height, ahk_id %hMainWnd%
+X := X + Width
+If (A_OSVersion ~= "WIN_(7|XP)") {
+   SysGet BorderW, 32 ; SM_CXFRAME
+   X += BorderW + 1
+}
+
+Gui Test: New, LabelTest
+Gui Show, x%X% y%Y% w200 h420, Test
+Return
+
+record(){
+	Global
+	Gui,2: Destroy
+	currentPat:=0
+	Gui,2: +AlwaysOnTop
+	Gui,2: Margin, 0, 0
+	Loop 28
+	{
+		n:=A_Index -1
+		x := (Mod(n, 4) * 42)
+		y := n // 4 * 36
+		
+		Gui,2:Add,Text, cBlack x%x%  y%y% w32 h32 +0x200 +Border +Center +Background vPAT%n% , 0
+		
+	}
+	
+	Gui,2:Add,Button, x0 gCopy, Copy Pattern
+	
+	WinGetPos X, Y, Width, Height, ahk_id %hMainWnd%
+	X := X - Width
+	If (A_OSVersion ~= "WIN_(7|XP)") {
+		SysGet BorderW, 32 ; SM_CXFRAME
+		X += BorderW + 1
+	}
+	
+	
+	Gui,2:Show, x%X% y%Y% NA, InvDrop
+}
+
+
+
+;-----------------Example Of Dropping Selected Slot
+!q::
+    inv_select(1)
+    ;inv_select(2)
+Return
+
+;---------------To drop whole inventory or Specific Slots if selected from GUI
+!w::
+    Loop 28 {
+        inv_select(A_Index,inv4)
+}
 Return
 
 
 
 
+
+;#################################  FUNCTIONS #################################
+
+copy(){
+	
+	MsgBox % join(patArray)
+	Clipboard := join(patArray)
+	;GuiControl,2: Text, PAT1, hello
+}
+
 join( strArray )
 {
   s := ""
   for i,v in strArray
-    s .= "." . v
+    s .= "," . v
   return substr(s, 2)
 }
 
@@ -104,13 +174,26 @@ return
 ~LButton::
 ;MouseGetPos,,,, curCon, 1
 ;MsgBox % curCon
-
+Gui,2: Submit,NoHide
 MouseGetPos,,, X, Y
 ControlGetText, OUT , %Y%, ahk_id %X%
 ;Msgbox, The window says, "%OUT%"
 
-;MouseGetPos, , , HWIN, HCTRL, 2
-;GuiControlGet, VarName, %HWIN%:Name, %HCTRL%
+MouseGetPos, , , HWIN, HCTRL
+GuiControlGet, theName, %HWIN%:Name, %HCTRL%
+ToolTip % theName
+if ( InStr(theName, "PAT") && currentPat < 28){
+	currentPat++
+	patArray[currentPat]:= SubStr(theName,4)+1
+}
+else if (currentPat >= 28){
+	currentPat:=1
+	patArray[SubStr(theName,4)+1]:= SubStr(theName,4)+1
+}
+	
+GuiControl, 2:, %theName%, % currentPat
+
+
 varname := "BAR" OUT-1
 ;ToolTip Control %HCTRL% is v%VarName%
 if (Array[SubStr(VarName,4)+1]==0){
@@ -129,86 +212,37 @@ return
 
 
 
-;-----------------Example Of Dropping Selected Slot
-!q::
-    ;KeyWait, Shift
-    inv_select(1)
-    ;inv_select(2)
-Return
+;################################# MAIN FUNCTION YOU NEED ##################################
 
-;---------------To drop whole inventory or Specific Slots if selected from GUI
-!w::
-    Loop 28 {
-        inv_select(A_Index,1)
-    }
-Return
-
-
-
-inv_select(n,m:=1,speed:=100) {
-
-    n:= n - 1, v:=0 ;15-16 middle of inventory slot, can be wrong outside RuneLite Client
-    ;xn:=0, yn:=0
-    ;WinGetPos XN, YN, , , A
-    ;---------------DROP MODE----------
-    
-
-    If (m=1){
-        x := (Mod(n, 4) * 42)  + 567 + v
-        y := n // 4 * 36 + 240 + v
-        loop 28
-            arr2[A_Index]:= array[inv[A_Index]]
-    }
-	if (m=2){
-        x := n // 7 * 42  + 567 + v
-        y := (Mod(n, 7) * 36)  + 240 + v   
-        loop 28
-            arr2[A_Index]:= array[inv2[A_Index]]   ; reverse mod 1 into 2
-            ;arr2[A_Index]:= array[inv[A_Index]] ","   ; reverse mod 2 into 1
-       
-    }
-    if (m=3){
-        Loop 28
-            arr2[A_Index]:= array[inv3[A_Index]]
-        if (n<14){
-            x := (Mod(n, 2) * 42) + 567 + v
-            y := n // 2 * 36  + 240 + v   
-        } else {
-            x := (Mod(n, 2) * 42)  + 567 + v + 84
-            y := n // 2 * 36  
-        }
-  
-    }
-    
-    ; if (n<14){
-        ; x := (Mod(n, 2) * 42) + XN + 567 + 15
-        ; y := n // 2 * 36 + YN + 240 + 15   
-        ; ToolTip % n + 1
-    ; } else {
-        ; x := (Mod(n, 2) * 42) + XN + 567 + 15 + 84
-        ; y := n // 2 * 36 + YN
-        ; ToolTip % n + 1
-    ; }
-    
-    
-    if (arr2[A_Index]=1){ ;put 0 to reverse
-    return
-    }    
-    
-
-    ;|---------Your Mouse Function Here --------|
-    ;Example
-    ;
+inv_select(n,m:=0,speed:=100) {
+	if (m=0)
+		m:=inv
+	v:=0 ;15-16 middle of inventory slot, can be wrong outside RuneLite Client
+	;xn:=0, yn:=0
+	;WinGetPos XN, YN, , , A
+	
+	;inv  change to your array for new pattern
+	n:= m[n] -1
+	x := (Mod(n, 4) * 42)  + 567 + v
+	y := n // 4 * 36 + 240 + v
+	
+	if (Array[n+1]=1) ;put 0 to reverse
+		return    
+	
+	
+	;|---------Your Mouse Function Here --------|
+	;|Example
+	;
 	;MouseMove, x, y, 0
-    move_m(x, y, 5)
-    ;MoveMouse(600, 400, 0.5)
-    ;ETC
-    
-    ;sleep 100 ;sleep between clicks
-    ;SendEvent {LShift Down}
-    Click
-    ;sleep speed
-    ;SendEvent {LShift Up}
+	move_m(x, y, 5)
+	;MoveMouse(600, 400, 0.5)
+	;ETC
+	
+	;unComment send events to drop items -------------------------------------------------
+	;SendEvent {LShift Down}
+	Click
+	sleep speed
+	;SendEvent {LShift Up}
 }
 
 
