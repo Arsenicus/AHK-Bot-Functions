@@ -37,8 +37,8 @@ Gui Add, GroupBox, x5 y0 w261 h58 -Theme
 Gui Add, GroupBox, x5 y56 w180 h61 -Theme
 Gui Add, GroupBox, x189 y56 w187 h61 -Theme
 Gui Add, GroupBox, x270 y0 w106 h58 -Theme
-;Gui Add, Text, x276 y9 w95 h13 +0x200, By Arekusei  v0.1
-Gui Add, Link, x276 y9 w95 h13, <a href="https://discord.gg/bRaz5gpaAt">By Arekusei v0.1</a>
+Gui Add, Text, x276 y9 w95 h13 +0x200, By Arekusei  v0.1
+;Gui Add, Link, x276 y9 w95 h13, <a href="https://discord.gg/bRaz5gpaAt">By Arekusei v0.1</a>
 Gui +AlwaysOnTop
 
 Gui Show, w384 h156 , AutoClicker v0.1
